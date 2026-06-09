@@ -234,6 +234,7 @@ Step 11: STORY ELABORATOR ──────────────────
     ▼
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │   HANDOFF TO BMM DEV AGENT (/bmad:bmm:agents:dev)                          │
+│   Codex: load agents/dev.md and ask it to run *dev-story                   │
 │   Execute stories via *dev-story workflow                                   │
 │   Built-in code review via *code-review                                     │
 └─────────────────────────────────────────────────────────────────────────────┘
@@ -254,6 +255,35 @@ This workflow queries the Knowledge MCP at key decision points:
 | `search_knowledge` | General queries | Any agent |
 
 **MCP Endpoint:** `https://knowledge-mcp-production.up.railway.app`
+
+---
+
+## CODEX SKILL COMPATIBILITY
+
+Codex discovers this workflow through repo-scoped skills in `.agents/skills`. After reloading Codex, use `/skills` or `$agents` to find the agent skills.
+
+Codex can execute this workflow without Claude/BMAD slash commands. When a step or agent references a command, Codex should treat it as an instruction to load the referenced file and run the named menu action.
+
+### Knowledge MCP
+
+| Slash command | Codex request |
+|---------------|---------------|
+| `/bmad:knowledge:search-knowledge <query>` | `Use search_knowledge for "<query>"` |
+| `/bmad:knowledge:get-patterns <topic>` | `Use get_patterns for topic "<topic>"` |
+| `/bmad:knowledge:get-warnings <topic>` | `Use get_warnings for topic "<topic>"` |
+| `/bmad:knowledge:get-decisions <topic>` | `Use get_decisions for topic "<topic>"` |
+| `/bmad:knowledge:list-sources` | `Use list_sources` |
+
+### Agent Menus
+
+Codex accepts the same menu commands after loading the matching skill, agent file, and XML config:
+
+| Skill | Loads | Commands |
+|-------|---------------|----------|
+| `agents-tech-lead` | `agents/tech-lead.md` + `agents/config/tech-lead-agent.xml` | `*menu`, `*review-backlog`, `*validate-consistency`, `*sequence-stories`, `*go-decision`, `*revise`, `*party-mode`, `*advanced-elicitation`, `*dismiss` |
+| `agents-dev` | `agents/dev.md` + `agents/config/dev-agent.xml` | `*menu`, `*dev-story`, `*code-review`, `*list-stories`, `*party-mode`, `*dismiss` |
+
+For step menus, Codex accepts the displayed letter choices directly, such as `[R]`, `[A]`, `[Q]`, `[P]`, `[C]`, `[H]`, and `[D]`.
 
 ---
 
@@ -334,6 +364,8 @@ Once stories are elaborated, invoke:
 → Select *dev-story
 → Stories auto-discovered from sprint artifacts
 ```
+
+In Codex, load `{workflow_path}/agents/dev.md` and ask Codex to run the `*dev-story` workflow against the generated sprint artifacts.
 
 ---
 

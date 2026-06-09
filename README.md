@@ -233,10 +233,80 @@ The workflow is designed to be executed step-by-step with your AI engineering pr
 
 ## Getting Started
 
-### Option 1: Use via Claude Code (No Installation)
+### Option 1: CLI Command
 
-Add to your `claude_desktop_config.json`:
+For Claude Code:
+```bash
+claude mcp add --transport sse knowledge-pipeline https://knowledge-mcp-production.up.railway.app/mcp
+```
 
+For Codex:
+```bash
+codex mcp add --transport sse knowledge-pipeline https://knowledge-mcp-production.up.railway.app/mcp
+```
+
+This automatically registers it and you can use it immediately from the connected agent:
+```text
+claude knowledge:list-sources
+claude knowledge:search-knowledge "RAG chunking"
+claude knowledge:get-warnings "rag"
+```
+
+In Codex, use the MCP tools when available in the session. If they are not exposed, use the direct HTTP commands below.
+
+### Codex Agent Skills
+
+Codex discovers repo-scoped skills from `.agents/skills`. After reloading the Codex session, type `/skills` or `$agents` and these skills should be available:
+
+| Skill | Purpose |
+|-------|---------|
+| `ai-engineering-workflow` | Start or continue the full AI Engineering Workflow |
+| `agents-business-analyst` | Activate the Business Analyst agent |
+| `agents-fti-architect` | Activate the FTI Architect agent |
+| `agents-data-engineer` | Activate the Data Engineer agent |
+| `agents-embeddings-engineer` | Activate the Embeddings Engineer agent |
+| `agents-fine-tuning-specialist` | Activate the Fine-Tuning Specialist agent |
+| `agents-rag-specialist` | Activate the RAG Specialist agent |
+| `agents-prompt-engineer` | Activate the Prompt Engineer agent |
+| `agents-llm-evaluator` | Activate the LLM Evaluator agent |
+| `agents-mlops-engineer` | Activate the MLOps Engineer agent |
+| `agents-tech-lead` | Activate the Tech Lead agent |
+| `agents-dev` | Activate the Dev agent |
+| `knowledge-pipeline` | Query the Knowledge MCP |
+
+Codex can also run the same workflow without explicit skill selection by loading the relevant workflow or agent file and following the menu command.
+
+| Claude/BMAD-style command | Codex equivalent |
+|---------------------------|------------------|
+| `/bmad:knowledge:search-knowledge <query>` | Ask Codex: `Use search_knowledge for "<query>"` |
+| `/bmad:knowledge:get-patterns <topic>` | Ask Codex: `Use get_patterns for topic "<topic>"` |
+| `/bmad:knowledge:get-warnings <topic>` | Ask Codex: `Use get_warnings for topic "<topic>"` |
+| `/bmad:knowledge:get-decisions <topic>` | Ask Codex: `Use get_decisions for topic "<topic>"` |
+| `/bmad:knowledge:list-sources` | Ask Codex: `Use list_sources` |
+| `/bmad:bmm:agents:dev` | Ask Codex: `Load agents/dev.md and agents/config/dev-agent.xml, then show Amelia's menu` |
+
+Once an agent is loaded, Codex accepts the same menu commands:
+
+| Agent | Commands |
+|-------|----------|
+| Tech Lead / Marcus | `*menu`, `*review-backlog`, `*validate-consistency`, `*sequence-stories`, `*go-decision`, `*revise`, `*party-mode`, `*advanced-elicitation`, `*dismiss` |
+| Dev / Amelia | `*menu`, `*dev-story`, `*code-review`, `*list-stories`, `*party-mode`, `*dismiss` |
+
+For normal workflow steps, Codex also accepts the letter menu choices printed by each step, such as `[R]` review, `[A]` analyze further, `[Q]` re-query Knowledge MCP, `[P]` progress, `[C]` continue, `[H]` handoff, and `[D]` done.
+
+### Option 2: Manual Config
+
+Add this to your Claude Desktop config or Codex `.mcp.json`:
+
+Claude Desktop file locations:
+- macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`
+- Windows: `%APPDATA%\Claude\claude_desktop_config.json`
+- Linux: `~/.config/Claude/claude_desktop_config.json`
+
+Codex project file:
+- `.mcp.json`
+
+Add this config:
 ```json
 {
   "mcpServers": {
@@ -248,32 +318,17 @@ Add to your `claude_desktop_config.json`:
 }
 ```
 
-**File locations:**
-- macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`
-- Windows: `%APPDATA%\Claude\claude_desktop_config.json`
-- Linux: `~/.config/Claude/claude_desktop_config.json`
+Then restart Claude Desktop or Codex.
 
-Then restart Claude Code. You can now query the knowledge pipeline using these tools:
+You can now query the knowledge pipeline using these tools:
 - `search_knowledge` — Semantic search across all knowledge
 - `get_decisions` — Architectural decisions with trade-offs
 - `get_patterns` — Reusable implementation patterns
 - `get_warnings` — Anti-patterns and pitfalls to avoid
 - `list_sources` — List all knowledge sources
 
-**Example:** Ask Claude "What decisions should I consider for RAG vs fine-tuning?"
+**Example:** Ask Claude or Codex "What decisions should I consider for RAG vs fine-tuning?"
 
-### Option 2: Clone & Use Slash Commands
-
-```bash
-git clone https://github.com/YOUR_USERNAME/AI_engineering.git
-cd AI_engineering
-
-# Use these slash commands in Claude Code:
-/search-knowledge prompt injection
-/get-decisions RAG vs fine-tuning
-/get-patterns semantic caching
-/get-warnings fine-tuning pitfalls
-```
 
 ## License
 

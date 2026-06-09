@@ -316,7 +316,10 @@ I've transformed {N} simplified stories into BMM-compliant story files.
    Or if using BMAD commands, the dev agent is at:
    `_bmad-output/bmb-creations/workflows/ai-engineering-workflow/agents/dev.md`
 
-2. **Select *dev-story** from the menu
+   In Codex, ask Codex to load and follow:
+   `{workflow_path}/agents/dev.md`
+
+2. **Select *dev-story** from the menu, or in Codex ask it to run the `*dev-story` workflow from the loaded dev agent
 
 3. **Stories will auto-discover** from sprint-status.yaml
 

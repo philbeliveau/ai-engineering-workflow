@@ -29,7 +29,21 @@ The workflow is built into BMAD (the system you're using). No installation neede
 
 ### Step 2: Verify Knowledge MCP Connection
 
-The workflow queries the Knowledge MCP for best practices. Verify your Claude Code config includes:
+The workflow queries the Knowledge MCP for best practices. Add it to your agent runtime first.
+
+For Claude Code:
+
+```bash
+claude mcp add --transport sse knowledge-pipeline https://knowledge-mcp-production.up.railway.app/mcp
+```
+
+For Codex:
+
+```bash
+codex mcp add --transport sse knowledge-pipeline https://knowledge-mcp-production.up.railway.app/mcp
+```
+
+Or verify your MCP config includes:
 
 ```json
 {
@@ -42,7 +56,47 @@ The workflow queries the Knowledge MCP for best practices. Verify your Claude Co
 }
 ```
 
+For Codex, this can live in the project `.mcp.json`.
+
 **No Knowledge MCP?** Don't worry - the workflow will still work, but without real-time best-practice grounding. Contact support to set it up.
+
+### Step 2A: Codex Skill Reference
+
+Codex discovers repo-scoped skills from `.agents/skills`. After reloading Codex, type `/skills` or `$agents` and select:
+
+| Skill | Purpose |
+|-------|---------|
+| `ai-engineering-workflow` | Start or continue the full workflow |
+| `agents-business-analyst` | Requirements elicitation |
+| `agents-fti-architect` | Architecture and tech stack |
+| `agents-data-engineer` | Data requirements and pipeline |
+| `agents-embeddings-engineer` | Chunking, embeddings, vector DB |
+| `agents-fine-tuning-specialist` | Fine-tuning design |
+| `agents-rag-specialist` | RAG pipeline |
+| `agents-prompt-engineer` | Prompt design |
+| `agents-llm-evaluator` | Evaluation framework |
+| `agents-mlops-engineer` | Operations and monitoring |
+| `agents-tech-lead` | Story review and GO/REVISE decision |
+| `agents-dev` | Story implementation and code review |
+| `knowledge-pipeline` | Knowledge MCP access |
+
+Codex can also run this workflow without explicit skill selection. Use these prompts:
+
+| Task | Codex prompt |
+|------|--------------|
+| Search knowledge | `Use search_knowledge for "<query>"` |
+| Get implementation patterns | `Use get_patterns for topic "<topic>"` |
+| Get warnings | `Use get_warnings for topic "<topic>"` |
+| Get architecture decisions | `Use get_decisions for topic "<topic>"` |
+| List knowledge sources | `Use list_sources` |
+| Start the workflow | `Load workflow.md and start Step 1 for project <project-name>` |
+| Continue workflow | `Continue from sidecar.yaml` |
+| Tech Lead review | `Load agents/tech-lead.md and agents/config/tech-lead-agent.xml, then run *review-backlog` |
+| Dev handoff | `Load agents/dev.md and agents/config/dev-agent.xml, then run *dev-story` |
+| Code review | `With Amelia loaded, run *code-review` |
+| List stories | `With Amelia loaded, run *list-stories` |
+
+For regular step menus, type the displayed letter or intent: `[R]` review, `[A]` analyze, `[Q]` re-query Knowledge MCP, `[P]` progress, `[C]` continue, `[H]` handoff, or `[D]` done.
 
 ### Step 3: Choose Your Project Type
 
@@ -601,7 +655,7 @@ Access 1,600+ best practices via the Knowledge MCP:
 1. **Workflow stuck?** Re-read the current step (it's detailed)
 2. **Tech question?** The Knowledge MCP likely has an answer
 3. **Validation issue?** Read the validation report for specific feedback
-4. **Design help?** Ask Claude to elaborate on options
+4. **Design help?** Ask Claude or Codex to elaborate on options
 
 ---
 
